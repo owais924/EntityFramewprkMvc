@@ -16,7 +16,7 @@ var dbtable;
 //    });
 //});
 $(document).ready(function () {
-   dbtable= $('#myTable').dataTable({
+   dbtable= $('#myTable').DataTable({
        "ajax": {
            "url":"/Admin/Product/AllProducts/"
        },
@@ -50,9 +50,10 @@ function RemoveProduct(url) {
         if (result.isConfirmed) {
             $.ajax({
                 url: url,
-                tpye: 'Delete',
+                tpye: "DELETE",
                 success: function (data) {
                     if (data.success) {
+                        dbtable.ajax.reload();
                         toastr.success(data.message);
                     }
                     else {
