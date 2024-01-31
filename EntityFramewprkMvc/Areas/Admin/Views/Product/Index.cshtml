@@ -1,4 +1,4 @@
-﻿@* @model MyApp.Models.ViewModel.CategoryView
+﻿@* @model MyApp.Models.ViewModel.ProductView
 @{
     ViewData["Title"] = "Index";
 } *@
@@ -11,18 +11,22 @@
     </div>
 
 </div>
-<table class="table table-bordered table-striped" style="width:100%">
+<table id="myTable" class="table table-bordered table-striped" style="width:100%">
     <thead>
         <tr>
             <th>Product Name</th>
             <th>Product Description</th>
             <th>Price</th>
             <th>Category</th>
+            <th>Action</th>
            
         </tr>
     </thead>
    
 
 </table>
+@section scripts{
+    <script src="~/js/Product.js"></script>
+}
 
 
