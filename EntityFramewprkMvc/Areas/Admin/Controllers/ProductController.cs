@@ -67,7 +67,7 @@ namespace EntityFrameworkMvc.Areas.Admin.Controllers
         }
         [HttpGet]
         public IActionResult CreateUpdate(int? id)
-        {
+            {
             ProductView vm = new ProductView();
             {
                 vm.Product = new();

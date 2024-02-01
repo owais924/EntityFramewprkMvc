@@ -55,6 +55,7 @@
                 </div>
             </div>
         </nav>
+                    <partial name="_LoginPartial"/>
 
 
 
@@ -66,7 +67,7 @@
     <div class="container">
         <main role="main" class="pb-3">
             <partial name="_Notification"/>
-          
+             
             @RenderBody()
         </main>
     </div>
@@ -84,6 +85,9 @@
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="//cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  @*   <script src="https://cdn.tiny.cloud/1/0cvy5gfm9ucvgoac753slbt30s1akt2clsk1nfi74hk3jewi/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script> *@
+@*     <script src="https://cdn.tiny.cloud/1/your-api-key/tinymce/6/tinymce.min.js"
+            referrerpolicy="origin"></script>; *@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
