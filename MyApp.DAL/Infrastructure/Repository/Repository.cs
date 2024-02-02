@@ -36,10 +36,14 @@ namespace MyApp.DAL.Infrastructure.Repository
             _dbSet.RemoveRange(entities);
         }
 
-        public IEnumerable<T> GetAll(string? includeProperties = null)
+        public IEnumerable<T> GetAll(Expression<Func<T, bool>>? predicate=null, string? includeProperties = null)
         {
             IQueryable<T> query = _dbSet;//many to many relationship
-            if(includeProperties != null)
+            if(predicate != null)
+            {
+                query = query.Where(predicate);
+            }
+            if (includeProperties != null)
             {
                 foreach(var item in includeProperties.Split(new char[] {','},StringSplitOptions.RemoveEmptyEntries))
                 {

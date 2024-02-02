@@ -10,6 +10,8 @@ namespace MyApp.DAL.Infrastructure.IRepository
     {
         ICategoryRepository Category { get; }
         IProductRepository Product { get; }
+        ICartRepository Cart { get; }
+        IApplicationtUserRepository ApplicationUser { get; }
         void Save();
     }
 }

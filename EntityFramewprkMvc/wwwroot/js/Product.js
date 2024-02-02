@@ -50,7 +50,7 @@ function RemoveProduct(url) {
         if (result.isConfirmed) {
             $.ajax({
                 url: url,
-                tpye: "DELETE",
+                type: "DELETE",
                 success: function (data) {
                     if (data.success) {
                         dbtable.ajax.reload();

@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MyApp.CommonHelper\MyApp.CommonHelper.csproj" />
     <ProjectReference Include="..\MyApp.DAL\MyApp.DAL.csproj" />
   </ItemGroup>
 
