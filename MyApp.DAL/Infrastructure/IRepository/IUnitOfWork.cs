@@ -12,6 +12,8 @@ namespace MyApp.DAL.Infrastructure.IRepository
         IProductRepository Product { get; }
         ICartRepository Cart { get; }
         IApplicationtUserRepository ApplicationUser { get; }
+        IOrderHeaderRepository OrderHeader { get; }
+        IOrderDetailRepository OrderDetail { get; }
         void Save();
     }
 }

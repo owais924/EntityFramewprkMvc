@@ -16,10 +16,16 @@ namespace MyApp.DAL.Infrastructure.Repository
            _context = context;
         }
 
+        public int DecrementCartItem(Cart cart, int count)
+        {
+            cart.Count -= count;
+            return cart.Count;
+        }
         public int IncrementCartItem(Cart cart, int count)
         {
             cart.Count += count;
             return cart.Count;
         }
+      
     }
 }

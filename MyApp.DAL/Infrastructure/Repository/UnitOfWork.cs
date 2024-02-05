@@ -15,6 +15,8 @@ namespace MyApp.DAL.Infrastructure.Repository
         public IProductRepository Product {  get; private set; }
         public ICartRepository Cart {  get; private set; }
         public IApplicationtUserRepository ApplicationUser {  get; private set; }
+        public IOrderHeaderRepository OrderHeader { get; private set; }
+        public IOrderDetailRepository OrderDetail { get; private set; }
 
         public UnitOfWork(ApplicationDbContext context) 
         {
@@ -23,6 +25,8 @@ namespace MyApp.DAL.Infrastructure.Repository
             Product = new ProductRepository(context);
             Cart = new CartRepository(context);
             ApplicationUser = new ApplicatioUserRepository(context);
+            OrderHeader = new OrderHeaderRepository(context);
+            OrderDetail = new OrderDetailRepository(context);
         }
 
         public void Save()

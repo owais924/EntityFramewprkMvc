@@ -8,6 +8,7 @@ namespace MyApp.Models.ViewModel
 {
     public class CartView
     {
-        public IEnumerable<Cart> ListOfCart { get; set; }
+        public IEnumerable<Cart> ListOfCart { get;  set; }
+       public OrderHeader OrderHeader { get; set; }
     }
 }

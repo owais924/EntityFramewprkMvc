@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace MyApp.DAL.Infrastructure.IRepository
 {
-    public interface ICartRepository: IRepository<Cart>
+    public interface IOrderDetailRepository: IRepository<OrderDetail>
     {
-     int IncrementCartItem(Cart cart, int count);
-        int DecrementCartItem(Cart cart, int count);
+     void Update(OrderDetail orderDetail);
     }
 }
