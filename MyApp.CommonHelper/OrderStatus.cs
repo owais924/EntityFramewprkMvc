@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MyApp.CommonHelper
 {
-    public static class OrderStatuscs
+    public static class OrderStatus
     {
         public const string StatusPending = "Pending";//Flegs value
         public const string StatusRefund = "Refunded";//Flegs value

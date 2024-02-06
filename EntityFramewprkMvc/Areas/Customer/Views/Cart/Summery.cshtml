@@ -1,4 +1,7 @@
 ﻿@model MyApp.Models.ViewModel.CartView
+@using Microsoft.Extensions.Options
+@inject IOptions<MyApp.CommonHelper.StripeSetting> Stripe   
+<form method="post">
 <div class="row">
     <div class="col-md-8 mb-4">
         <div class="card mb-4">
@@ -60,7 +63,7 @@
                  <li class="list-group-item d-flex justify-content-between align-items-center border-4">
                   <span>@details.Product.Name</span>
                   <span>QTY: @details.Count</span>
-                  <span>@(((details.Product.Price)*(details.Count)).ToString(""))</span>
+                  <span>@(((details.Product.Price)*(details.Count)).ToString("c"))</span>
                  </li>
                     }
                     <li class="list-group-item d-flex justify-content-between align-items-center border-4">
@@ -68,12 +71,13 @@
                             <strong>Total Amount</strong>
                             <strong><p class="mb-0">(Include VAT)</p></strong>
                         </div>
-                        <span><strong>@Model.OrderHeader.OrderTotal.ToString("")</strong></span>
+                        <span><strong>@Model.OrderHeader.OrderTotal.ToString("c")</strong></span>
                     </li>
              </ul><br/>
-             <button type="button" class="btn btn-primary btn-lg btn-block">Purchase Order</button>
+             <button type="submit" class="btn btn-primary btn-lg btn-block">Purchase Order</button>
          </div>
          
         </div>
     </div>
 </div>
+</form>

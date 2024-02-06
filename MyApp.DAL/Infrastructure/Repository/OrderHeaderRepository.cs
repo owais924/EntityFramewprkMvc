@@ -16,6 +16,13 @@ namespace MyApp.DAL.Infrastructure.Repository
            _context = context;
         }
 
+        public void PaymentStatus(int Id, string SessionId, string PaymentIntentId)
+        {
+           var orderHeader = _context.OrderHeaders.FirstOrDefault(x => x.Id == Id);
+            orderHeader.PaymentIntentId = PaymentIntentId;
+            orderHeader.SessionId = SessionId;
+        }
+
         public void Update(OrderHeader orderHeader)
         {
             _context.OrderHeaders.Update(orderHeader);
@@ -27,16 +34,16 @@ namespace MyApp.DAL.Infrastructure.Repository
            // }
         }
 
-        public void UpdateStatus(int id, string orderStatus, string? paymenrStatus = null)
+        public void UpdateStatus(int Id, string orderStatus, string? paymentStatus = null)
         {
-           var order= _context.OrderHeaders.FirstOrDefault(x => x.Id == id);
+           var order= _context.OrderHeaders.FirstOrDefault(x => x.Id == Id);
             if (order != null)
             {
                     order.OrderStatus = orderStatus;
             }
-            if(paymenrStatus != null)
+            if(paymentStatus != null)
             {
-                order.PayementStatus= paymenrStatus;
+                order.PayementStatus= paymentStatus;
             }
         }
     }
