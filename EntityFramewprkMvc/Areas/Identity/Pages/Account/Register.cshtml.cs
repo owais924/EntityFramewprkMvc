@@ -125,15 +125,15 @@ namespace EntityFrameworkMvc.Areas.Identity.Pages.Account
               _roleManager.CreateAsync(new IdentityRole(WebsiteRole.Role_Employee)).GetAwaiter().GetResult();
             }
             var users = _unitOfWork.ApplicationUser.GetAll();
-            foreach (var user in users)
+            foreach(var user in users)
             {
-                if (user.Email == "superadmin@xyz.com")
+                if(user.Email == "superadmin@xyz.com")
                 {
                     _userManager.AddToRoleAsync(user, WebsiteRole.Role_Admin).Wait();
                 }
                 else
                 {
-                   _userManager.AddToRoleAsync(user, WebsiteRole.Role_User).Wait();
+                    _userManager.AddToRoleAsync(user, WebsiteRole.Role_User).Wait();
                 }
             }
             ReturnUrl = returnUrl;
