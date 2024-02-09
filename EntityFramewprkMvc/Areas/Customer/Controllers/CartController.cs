@@ -132,11 +132,12 @@ namespace EntityFrameworkMvc.Areas.Customer.Controllers
             Session session = service.Create(options);
             _unitOfWork.OrderHeader.PaymentStatus(vm.OrderHeader.Id, session.Id,session.PaymentIntentId);
             _unitOfWork.Save();
+            _unitOfWork.Cart.DeleteRange(vm.ListOfCart);
+            _unitOfWork.Save();
             Response.Headers.Add("Location", session.Url);
             return new StatusCodeResult(303);
-            //_unitOfWork.Cart.DeleteRange(vm.ListOfCart);
-            //_unitOfWork.Save();
-            //return RedirectToAction("Index", "Home");
+            
+            return RedirectToAction("Index", "Home");
         }
         public IActionResult ordersuccess(int id) 
         {
@@ -166,7 +167,9 @@ namespace EntityFrameworkMvc.Areas.Customer.Controllers
             if (cart.Count<= 1)
             {
                 _unitOfWork.Cart.Delete(cart);
-                
+                var count = _unitOfWork.Cart.GetAll(x => x.ApplicationUserId == cart.ApplicationUserId).ToList().Count-1;
+                HttpContext.Session.SetInt32("SessionCart", count);
+                return RedirectToAction(nameof(Index));
             }
             else
             {
@@ -181,6 +184,8 @@ namespace EntityFrameworkMvc.Areas.Customer.Controllers
             var cart = _unitOfWork.Cart.GetT(x => x.Id == id);
             _unitOfWork.Cart.Delete(cart);
             _unitOfWork.Save();
+            var count = _unitOfWork.Cart.GetAll(x=>x.ApplicationUserId==cart.ApplicationUserId).ToList().Count;
+            HttpContext.Session.SetInt32("SessionCart", count);
             return RedirectToAction(nameof(Index));
         }
 

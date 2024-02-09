@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using EntityFrameworkMvc.Areas.Customer.Controllers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MyApp.CommonHelper;
 using MyApp.DAL.Infrastructure.IRepository;
 using MyApp.Models;
 using MyApp.Models.ViewModel;
+using Stripe;
+using Stripe.Checkout;
 using System.Security.Claims;
 
 namespace EntityFrameworkMvc.Areas.Admin.Controllers
@@ -17,6 +20,7 @@ namespace EntityFrameworkMvc.Areas.Admin.Controllers
         private  IUnitOfWork _unitOfWork;
         public OrderController(IUnitOfWork unitOfWork)
         {
+            
             _unitOfWork= unitOfWork;
         }
         #region APICALL
@@ -42,6 +46,13 @@ namespace EntityFrameworkMvc.Areas.Admin.Controllers
                 case "approved":
                     orderHeader = orderHeader.Where(x => x.PayementStatus == PaymentStatus.StatusApproved);
                     break;
+                case "underprocess":
+                    orderHeader = orderHeader.Where(x => x.OrderStatus == OrderStatus.StatusInProcess);
+                    break;
+                case "shipped":
+                    orderHeader = orderHeader.Where(x => x.OrderStatus == OrderStatus.StatusShipped);
+                    break;
+              
                 default:
                     break;
             }
@@ -71,6 +82,7 @@ namespace EntityFrameworkMvc.Areas.Admin.Controllers
             return View(orderView);
         }
         
+        [Authorize(Roles =WebsiteRole.Role_Admin+","+WebsiteRole.Role_Employee)]
         [HttpPost]
         public IActionResult OrderDetails(OrderView orderview )
         {
@@ -95,6 +107,7 @@ namespace EntityFrameworkMvc.Areas.Admin.Controllers
             return RedirectToAction("OrderDetails","Order", new {id=orderview.OrderHeader.Id});
            
         }
+        [Authorize(Roles = WebsiteRole.Role_Admin + "," + WebsiteRole.Role_Employee)]
         public IActionResult InProcess(OrderView orderview)
         {
             _unitOfWork.OrderHeader.UpdateStatus(orderview.OrderHeader.Id,OrderStatus.StatusInProcess);
@@ -103,6 +116,7 @@ namespace EntityFrameworkMvc.Areas.Admin.Controllers
             return RedirectToAction("OrderDetails", "Order", new { id = orderview.OrderHeader.Id });
 
         }
+        [Authorize(Roles = WebsiteRole.Role_Admin + "," + WebsiteRole.Role_Employee)]
         public IActionResult Shipped(OrderView orderview)
         {
             var orderHeader = _unitOfWork.OrderHeader.GetT(x => x.Id == orderview.OrderHeader.Id);
@@ -115,8 +129,73 @@ namespace EntityFrameworkMvc.Areas.Admin.Controllers
             TempData["success"] = "Order Status Updated-InShipped";
             return RedirectToAction("OrderDetails", "Order", new { id = orderview.OrderHeader.Id });
         }
+        [Authorize(Roles = WebsiteRole.Role_Admin + "," + WebsiteRole.Role_Employee)]
+        public IActionResult CancelOrder(OrderView orderview)
+        {
+            var orderHeader = _unitOfWork.OrderHeader.GetT(x => x.Id == orderview.OrderHeader.Id);
+         
 
+            if (orderHeader.PayementStatus==PaymentStatus.StatusApproved)
+            {
+                var refund = new RefundCreateOptions
+                {
+                    Reason = RefundReasons.RequestedByCustomer,
+                    PaymentIntent = orderHeader.PaymentIntentId
+                };
+                var service = new RefundService();
+                Refund resultRefund = service.Create(refund);
+                _unitOfWork.OrderHeader.UpdateStatus(orderHeader.Id, OrderStatus.StatusCancelled, OrderStatus.StatusRefund);
+            }
+            else
+            {
+                _unitOfWork.OrderHeader.UpdateStatus(orderHeader.Id, OrderStatus.StatusCancelled, OrderStatus.StatusCancelled);
+            }
+           
+            _unitOfWork.Save();
+            TempData["success"] = "Order Cancelled";
+            return RedirectToAction("OrderDetails", "Order", new { id = orderview.OrderHeader.Id });
+        }
+        public IActionResult PayNow(OrderView orderview)
+        {
+            var OrderHeader = _unitOfWork.OrderHeader.GetT(x => x.Id == orderview.OrderHeader.Id, includeProperties: "ApplicationUser");
+            var OrderDetail = _unitOfWork.OrderDetail.GetAll(x => x.OrderHeaderId == orderview.OrderHeader.Id, includeProperties: "Product");
 
+            var domain = "https://localhost:7101/";
+            var options = new SessionCreateOptions
+            {
+                LineItems = new List<SessionLineItemOptions>(),
+
+                Mode = "payment",
+                SuccessUrl = domain + $"customer/cart/ordersuccess?id={orderview.OrderHeader.Id}",
+                CancelUrl = domain + $"customer/cart/Index",
+            };
+            foreach (var item in OrderDetail)
+            {
+
+                var lineItemsOptions = new SessionLineItemOptions
+                {
+                    PriceData = new SessionLineItemPriceDataOptions
+                    {
+                        UnitAmount = (long)(item.Product.Price * 100),
+                        Currency = "PKR",
+                        ProductData = new SessionLineItemPriceDataProductDataOptions
+                        {
+                            Name = item.Product.Name,
+                        },
+                    },
+                    Quantity = item.Count,
+                };
+                options.LineItems.Add(lineItemsOptions);
+            }
+            var service = new SessionService();
+            Session session = service.Create(options);
+            _unitOfWork.OrderHeader.PaymentStatus(orderview.OrderHeader.Id, session.Id, session.PaymentIntentId);
+            _unitOfWork.Save();
+            Response.Headers.Add("Location", session.Url);
+            return new StatusCodeResult(303);
+
+            return RedirectToAction("Index", "Home");
+        }
 
     }
 }

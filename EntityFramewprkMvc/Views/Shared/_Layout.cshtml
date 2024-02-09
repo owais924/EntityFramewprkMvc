@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -34,10 +36,15 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-area="Admin" asp-controller="Order" asp-action="Index">Orders</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="Customer"  asp-controller="Cart" asp-action="Index"><i class="bi bi-cart"></i></a>
-                        </li>
-                       @*  <li class="nav-item">
+                     
+                        
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Customer" asp-action="Index" asp-controller="Cart">
+                                    @await Component.InvokeAsync("Cart")
+                                </a>
+                            </li>
+                        
+                        @*  <li class="nav-item">
                             <a class="nav-link" href="#">Pricing</a>
                         </li>
                         <li class="nav-item">

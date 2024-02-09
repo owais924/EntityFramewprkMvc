@@ -51,13 +51,14 @@ namespace EntityFrameworkMvc.Areas.Customer.Controllers
                 var cartItem = _unitofWork.Cart.GetT(x => x.ProductId == cart.ProductId && x.ApplicationUserId==claims.Value);
                 if(cartItem == null) { 
                 _unitofWork.Cart.Add(cart);
-               
+                    _unitofWork.Save();
+                    HttpContext.Session.SetInt32("SessionCart", _unitofWork.Cart.GetAll(x=>x.ApplicationUserId==claims.Value).ToList().Count);
                 }
                 else
                 {
                     _unitofWork.Cart.IncrementCartItem(cartItem, cart.Count);
-                }
                     _unitofWork.Save();
+                }
             }
             return RedirectToAction("Index");
         }

@@ -23,6 +23,16 @@ $(document).ready(function () {
     else {
         if (url.includes("approved")) {
             OrderTable("approved");
+        } else {
+            if (url.includes("shipped")) {
+                OrderTable("shipped");
+            } else {
+                if (url.includes("underprecess")) {
+                    OrderTable("underprecess");
+                } else {
+                    OrderTable("all");
+                }
+            }
         }
     }
 });

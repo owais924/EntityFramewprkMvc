@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Routing.Constraints;
+using MyApp.CommonHelper;
 using MyApp.DAL.Infrastructure.IRepository;
 using MyApp.Models.ViewModel;
 
 namespace EntityFrameworkMvc.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = WebsiteRole.Role_Admin)]
     public class ProductController : Controller
     {
         private IUnitOfWork _unitofwork;

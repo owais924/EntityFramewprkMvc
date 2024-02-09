@@ -195,12 +195,12 @@
                                 <span>@item.Product.Name</span>
                                 <span>QTY:@item.Count </span>
                                 <span>Price:@item.Price</span>
-                                <div class="text-end">@((item.Count*item.Price).ToString("pkr"))</div>
+                                <div class="text-end">@((item.Count*item.Price).ToString("c"))</div>
                             </li>
                             }
                             <li class="list-group-item d-flex justify-content-between align-item-center border-0 px-0 mb-3">
                                 <div>
-                                    <strong>Total Amount &nsub;<span class="text-end">@Model.OrderHeader.OrderTotal.ToString("pkr")</span></strong>
+                                    <strong>Total Amount &nsub;<span class="text-end">@Model.OrderHeader.OrderTotal.ToString("c")</span></strong>
                                     <strong>PKR</strong>
                                 </div>
                                 <span><strong></strong></span>
@@ -218,12 +218,19 @@
                         {
                                 <button asp-action="Shipped" type="submit" onclick="return ValidateEmpty()" class="btn btn-success btn-lg btn-block mb-2">Ship Order</button>
                         }
-                        if(Model.OrderHeader.OrderStatus != OrderStatus.StatusRefund || Model.OrderHeader.OrderStatus!=OrderStatus.StatusCancelled)
+                        if(Model.OrderHeader.OrderStatus != OrderStatus.StatusRefund && Model.OrderHeader.OrderStatus!=OrderStatus.StatusCancelled)
                         {
-                            <button type="submit" class="btn btn-dark btn-lg btn-block mb-2">Cancel Order</button>
+                                <button asp-action="CancelOrder" type="submit" class="btn btn-dark btn-lg btn-block mb-2">Cancel Order</button>
+                            }
+
                         }
-                    }
-                     
+                        else
+                        {
+                            @if (User.IsInRole(WebsiteRole.Role_User) && Model.OrderHeader.OrderStatus == OrderStatus.StatusPending)
+                            {
+                                <button asp-action="PayNow" type="submit" class="btn btn-success btn-lg btn-block mb-2">Pay Now</button>
+                            }
+                        }
                 </div>
             </div>
         </div>

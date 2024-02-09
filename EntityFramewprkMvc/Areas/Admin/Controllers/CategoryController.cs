@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using MyApp.CommonHelper;
 using MyApp.DAL;
 using MyApp.DAL.Infrastructure.IRepository;
 using MyApp.Models;
@@ -8,6 +9,7 @@ using MyApp.Models.ViewModel;
 namespace EntityFrameworkMvc.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles =WebsiteRole.Role_Admin)]
     public class CategoryController : Controller
     {
         private IUnitOfWork _unitofwork;
